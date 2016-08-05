@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jfeser/timeout.svg?branch=master)](https://travis-ci.org/jfeser/timeout)
+
 ```
 Run a command with time and memory limits.
 
