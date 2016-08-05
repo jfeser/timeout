@@ -32,7 +32,7 @@ module Make (PI : Process_info.S) : S = struct
     stderr_fn : string option;
   }
 
-  let ticks_per_second = 100
+  let ticks_per_second = 1
   let sleep_time = Float.(/) 1.0 (Float.of_int ticks_per_second)
 
   let peak_memory = ref Int64.min_value
