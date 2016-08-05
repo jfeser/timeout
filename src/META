@@ -1,0 +1,33 @@
+# OASIS_START
+# DO NOT EDIT (digest: e231c03e30c8ae0b1eac01498c1ef349)
+version = "1.0"
+description = "A tool for running programs with time & memory limits."
+requires = "core core_extended"
+archive(byte) = "timeout_lib.cma"
+archive(byte, plugin) = "timeout_lib.cma"
+archive(native) = "timeout_lib.cmxa"
+archive(native, plugin) = "timeout_lib.cmxs"
+exists_if = "timeout_lib.cma"
+package "osx" (
+ version = "1.0"
+ description = "A tool for running programs with time & memory limits."
+ requires = "timeout core ctypes ctypes.foreign"
+ archive(byte) = "timeout_lib_osx.cma"
+ archive(byte, plugin) = "timeout_lib_osx.cma"
+ archive(native) = "timeout_lib_osx.cmxa"
+ archive(native, plugin) = "timeout_lib_osx.cmxs"
+ exists_if = "timeout_lib_osx.cma"
+)
+
+package "linux" (
+ version = "1.0"
+ description = "A tool for running programs with time & memory limits."
+ requires = "timeout core core_extended"
+ archive(byte) = "timeout_lib_linux.cma"
+ archive(byte, plugin) = "timeout_lib_linux.cma"
+ archive(native) = "timeout_lib_linux.cmxa"
+ archive(native, plugin) = "timeout_lib_linux.cmxs"
+ exists_if = "timeout_lib_linux.cma"
+)
+# OASIS_STOP
+

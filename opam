@@ -1,0 +1,23 @@
+opam-version: "1.2"
+name:         "timeout"
+version:      "1.0"
+maintainer:   "Jack Feser <jack.feser@gmail.com>"
+authors:      "Jack Feser <jack.feser@gmail.com>"
+homepage:     "https://github.com/jfeser/timeout"
+bug-reports:  "https://github.com/jfeser/timeout/issues"
+license:      "Apache2.0"
+dev-repo:     "https://github.com/jfeser/timeout.git"
+build: [
+  ["./configure" "--prefix=%{prefix}%"]
+  [make]
+]
+install: [make "install"]
+remove: [make "uninstall"]
+depends: [
+  "ocamlfind"      {build & <= "1.6.2"}
+  "core"           {>= "113.24.00" & <= "113.43.00"}
+  "core_extended"  {>= "113.24.00" & <= "113.43.00"}
+  "ctypes"         {<= "0.6.2"}
+  "ctypes-foreign" {<= "0.4.0"}
+  "yojson"         {<= "1.3.2"}
+]
