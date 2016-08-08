@@ -27,8 +27,8 @@ module Make (Process : Limited_process.S) = struct
         | `Killed_runtime -> "killed_runtime"
         | `Exit_or_signal _ -> "exited"
       end;
-      "stdout", `String (read_file (Option.value_exn result.Process.stdout_fn));
-      "stderr", `String (read_file (Option.value_exn result.Process.stderr_fn));
+      "stdout", `String (Option.value_map result.Process.stdout_fn ~f:read_file ~default:"");
+      "stderr", `String (Option.value_map result.Process.stderr_fn ~f:read_file ~default:"");
     ] |> Json.pretty_to_channel ~std:true Out_channel.stdout
   
   let main
