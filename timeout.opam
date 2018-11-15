@@ -10,8 +10,6 @@ dev-repo:     "https://github.com/jfeser/timeout.git"
 build: [
   ["dune" "build" "-p" name "-j" jobs]
 ]
-install: [make "install"]
-remove: ["ocamlfind" "remove" "timeout"]
 depends: [
   "dune"           {build & >= "1.1"}
   "core"           {>= "v0.11" & < "v0.12"}
