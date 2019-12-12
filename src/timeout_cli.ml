@@ -3,51 +3,50 @@ open Stdio
 module Json = Yojson.Safe
 
 module Make (Process : Limited_process.S) = struct
+  open Process
+
   let print_stats result =
-    Out_channel.newline stdout ;
-    ( match result.Process.status with
+    Out_channel.newline stdout;
+    ( match result.status with
     | `Success -> printf "Child exited with return code 0.\n"
     | `Exit_or_signal (`Exit_non_zero code) ->
         printf "Child exited with return code %d.\n" code
     | `Exit_or_signal (`Signal s) ->
         printf "Child received signal %s.\n" (Signal.to_string s)
     | `Killed_memory -> printf "Child killed for violating memory limit.\n"
-    | `Killed_runtime -> printf "Child killed for violating runtime limit.\n"
-    ) ;
-    if result.Process.peak_memory <> Int64.min_value then
+    | `Killed_runtime -> printf "Child killed for violating runtime limit.\n" );
+    if Int64.(result.peak_memory <> min_value) then
       printf "Peak memory: %s Mb\n"
-        ( Int64.( / ) result.Process.peak_memory (Int64.of_int 1000000)
-        |> Int64.to_string ) ;
-    printf "Runtime: %s" (Time_ns.Span.to_short_string result.Process.runtime)
+        ( Int64.( / ) result.peak_memory (Int64.of_int 1000000)
+        |> Int64.to_string );
+    printf "Runtime: %s" (Time_ns.Span.to_short_string result.runtime)
 
   let print_machine result =
     let read_file fn = In_channel.with_file fn ~f:In_channel.input_all in
     `Assoc
-      [ ("runtime", `Float (Time_ns.Span.to_sec result.Process.runtime))
-      ; ( "peak_memory"
-        , `Intlit
-            ( Int64.( / ) result.Process.peak_memory (Int64.of_int 1000000)
-            |> Int64.to_string ) )
-      ; ( "status"
-        , `String
-            ( match result.Process.status with
+      [
+        ("runtime", `Float (Time_ns.Span.to_sec result.runtime));
+        ( "peak_memory",
+          `Intlit
+            ( Int64.( / ) result.peak_memory (Int64.of_int 1000000)
+            |> Int64.to_string ) );
+        ( "status",
+          `String
+            ( match result.status with
             | `Success -> "success"
             | `Killed_memory -> "killed_memory"
             | `Killed_runtime -> "killed_runtime"
-            | `Exit_or_signal _ -> "exited" ) )
-      ; ( "stdout"
-        , `String
-            (Option.value_map result.Process.stdout_fn ~f:read_file ~default:"")
-        )
-      ; ( "stderr"
-        , `String
-            (Option.value_map result.Process.stderr_fn ~f:read_file ~default:"")
-        ) ]
+            | `Exit_or_signal _ -> "exited" ) );
+        ( "stdout",
+          `String (Option.value_map result.stdout_fn ~f:read_file ~default:"")
+        );
+        ( "stderr",
+          `String (Option.value_map result.stderr_fn ~f:read_file ~default:"")
+        );
+      ]
     |> Json.pretty_to_channel ~std:true Out_channel.stdout
 
-  let main (memory_limit : int option) (time_limit : float option)
-      (machine_readable : bool) (silence_child : bool)
-      (command : string list option) (_ : unit) =
+  let main memory_limit time_limit machine_readable silence_child command () =
     match command with
     | Some (prog :: args) ->
         let mem_limit = Option.map ~f:(fun mb -> mb * 1000000) memory_limit in
@@ -58,7 +57,7 @@ module Make (Process : Limited_process.S) = struct
           else `Standard
         in
         let result =
-          Process.run ~output ?mem_limit ?time_limit (`Program (prog, args))
+          run ~output ?mem_limit ?time_limit (`Program (prog, args))
         in
         if machine_readable then print_machine result else print_stats result
     | None | Some [] -> failwith "Error: No command specified."
@@ -67,13 +66,13 @@ module Make (Process : Limited_process.S) = struct
     let spec =
       let open Command.Spec in
       empty
-      +> flag "-m" ~aliases:["--memory"] (optional int)
+      +> flag "-m" ~aliases:[ "--memory" ] (optional int)
            ~doc:" process memory limit (Mb) (default: unlimited)"
-      +> flag "-t" ~aliases:["--time"] (optional float)
+      +> flag "-t" ~aliases:[ "--time" ] (optional float)
            ~doc:" process time limit (sec) (default: unlimited)"
       +> flag "--machine-readable" no_arg
            ~doc:" produce a summary in machine readable format"
-      +> flag "-q" ~aliases:["--quiet"] no_arg
+      +> flag "-q" ~aliases:[ "--quiet" ] no_arg
            ~doc:" silence all output from the child process"
       +> flag "--" escape
            ~doc:" use the remaining arguments as the command to run"

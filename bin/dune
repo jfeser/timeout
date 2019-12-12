@@ -1,0 +1,13 @@
+(install
+ (section bin)
+ (files timeout_osx.exe))
+
+(executable
+ (name timeout_osx)
+ (libraries timeout)
+ (modules timeout_osx))
+
+(executable
+ (name timeout_linux)
+ (libraries timeout)
+ (modules timeout_linux))

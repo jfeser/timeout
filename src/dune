@@ -1,11 +1,6 @@
-(install
- (section bin)
- (files timeout_linux.exe))
-
-(executable
- (name timeout_linux)
- (libraries core core_extended yojson)
- (flags (:standard -g -bin-annot))
+(library
+ (name timeout)
+ (libraries core ctypes ctypes.foreign yojson)
  (preprocess (pps ppx_sexp_conv ppx_let)))
 
 ; Local Variables:
