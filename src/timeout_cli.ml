@@ -46,7 +46,8 @@ module Make (Process : Limited_process.S) = struct
       ]
     |> Json.pretty_to_channel ~std:true Out_channel.stdout
 
-  let main memory_limit time_limit machine_readable silence_child command () =
+  let main memory_limit time_limit machine_readable silence_child verbose
+      command () =
     match command with
     | Some (prog :: args) ->
         let mem_limit = Option.map ~f:(fun mb -> mb * 1000000) memory_limit in
@@ -59,7 +60,8 @@ module Make (Process : Limited_process.S) = struct
         let result =
           run ~output ?mem_limit ?time_limit (`Program (prog, args))
         in
-        if machine_readable then print_machine result else print_stats result
+        if machine_readable then print_machine result
+        else if verbose then print_stats result
     | None | Some [] -> failwith "Error: No command specified."
 
   let () =
@@ -74,6 +76,7 @@ module Make (Process : Limited_process.S) = struct
            ~doc:" produce a summary in machine readable format"
       +> flag "-q" ~aliases:[ "--quiet" ] no_arg
            ~doc:" silence all output from the child process"
+      +> flag "-v" ~aliases:[ "--verbose" ] no_arg ~doc:" enable verbose output"
       +> flag "--" escape
            ~doc:" use the remaining arguments as the command to run"
     in
