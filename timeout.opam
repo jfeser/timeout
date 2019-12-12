@@ -13,7 +13,6 @@ build: [
 depends: [
   "dune"           {build & >= "1.1"}
   "core"           {>= "v0.11"}
-  "core_extended"  {>= "v0.11"}
   "ctypes"         {>= "0.14"}
   "ctypes-foreign" {>= "0.4"}
   "yojson"         {>= "1.4"}
