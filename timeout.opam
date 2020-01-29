@@ -1,7 +1,7 @@
 opam-version: "2.0"
-name:         "timeout"
+name:         "timeout-macos"
 synopsis:     "Run a command with time and memory limits"
-version:      "1.0"
+version:      "1.1"
 maintainer:   "Jack Feser <jack.feser@gmail.com>"
 authors:      "Jack Feser <jack.feser@gmail.com>"
 homepage:     "https://github.com/jfeser/timeout"
@@ -12,9 +12,10 @@ build: [
   ["dune" "build" "-p" name "-j" jobs]
 ]
 depends: [
-  "dune"           {build & >= "1.1"}
-  "core"           {>= "v0.11"}
-  "ctypes"         {>= "0.14"}
-  "ctypes-foreign" {>= "0.4"}
-  "yojson"         {>= "1.4"}
+  "dune"            {build & >= "2.1"}
+  "ppx_yojson_conv" {>= "v0.13"}
+  "core"            {>= "v0.13"}
+  "ctypes"          {>= "0.16"}
+  "ctypes-foreign"  {>= "0.4"}
+  "yojson"          {>= "1.7"}
 ]

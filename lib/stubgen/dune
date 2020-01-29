@@ -1,0 +1,16 @@
+(executable
+ (name bindings_c_gen)
+ (libraries bindings core ctypes.stubs))
+
+(rule
+ (targets bindings_stubs_gen.c)
+ (deps (:stubgen bindings_c_gen.exe))
+ (action (with-stdout-to %{targets} (run %{stubgen} -c))))
+
+(rule
+ (targets bindings_stubs_gen.exe)
+ (deps (:src bindings_stubs_gen.c))
+ (action
+  (bash
+    "%{cc} %{src} -I `dirname %{lib:ctypes:ctypes_cstubs_internals.h}` -I %{ocaml_where} -o %{targets}"))
+)

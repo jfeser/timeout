@@ -1,13 +1,5 @@
-(install
- (section bin)
- (files timeout_osx.exe))
-
 (executable
- (name timeout_osx)
+ (public_name timeout)
  (libraries timeout)
- (modules timeout_osx))
-
-(executable
- (name timeout_linux)
- (libraries timeout)
- (modules timeout_linux))
+ (preprocess (pps ppx_yojson_conv))
+ (modules timeout))

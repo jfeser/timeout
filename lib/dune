@@ -1,0 +1,10 @@
+(library
+ (name timeout)
+ (libraries bindings core ctypes ctypes.foreign yojson)
+ (preprocess (pps ppx_sexp_conv ppx_let ppx_yojson_conv))
+ (flags (:standard -w -9-27)))
+
+(rule
+ (targets bindings_stubs.ml)
+ (deps (:stubgen stubgen/bindings_stubs_gen.exe))
+ (action (with-stdout-to %{targets} (run %{deps} -ml))))
